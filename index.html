@@ -2,9 +2,71 @@
 <html lang="en">
 <head>
 	<title>Markmail - Markdown to templated email</title>
-	<script type="text/javascript" src="/libs/marked/lib/marked.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
+	<script type="text/javascript" src="libs/marked/lib/marked.js"></script>
+	<script type="text/javascript" src="app/conf.js"></script>
+	<script type="text/javascript" src="app/markmail.js"></script>
+	<style>
+		textarea {width: 70em; height: 7em;}
+	</style>
 </head>
 <body>
+
+<h1>Email Tagger for Aweber</h1>
+
+<p>To do for me:</p>
+
+<ul>
+	<li>Fix conf.js problem, Firefox says that it's an invalid object initializer</li>
+	<li>Download jQuery as a sub-module (at least then it can work offline)</li>
+	<li>Generalise from the campaigns below</li>
+	<li>Somehow generalise campaign code, not everyone will want "newsletter-YYYY-MM-DD"</li>
+</ul>
+
+<form id="form_tagger">
+
+<p>
+	List:<br>
+	<input type="radio" name="list" value="bite_news" id="bite_news" checked="checked"><label for="bite_news"> bite_news (prospects)</label>
+	<br>
+	<input type="radio" name="list" value="bitesize_member" id="bitesize_member"><label for="bitesize_member"> bitesize_member (members)</label>
+	<br>
+	<input type="radio" name="list" value="bitesize_begin" id="bitesize_begin"><label for="bitesize_begin"> bitesize_begin (free beginners course)</label>
+</p>
+
+<p>
+	<label for="campaign">Campaign:</label> <br>
+	<input type="text" name="campaign" id="campaign" value="">
+</p>
+
+<p>
+	Input: (paste content here in Markdown syntax)<br>
+	<textarea name="text_input" id="text_input"></textarea>
+	<br>
+	<input type="submit" value="Tag this email">
+</p>
+
+<p>
+	Output HTML:<br>
+	<textarea name="output_html" id="output_html"></textarea>
+</p>
+
+<p>
+	Output plain text:<br>
+	<textarea name="output_plain" id="output_plain"></textarea>
+</p>
+
+</form>
+
+<script>
+	$(document).ready(function(){
+		$('#campaign').val('newsletter-' + nextDayOccurenc('wednesday'));
+		$('#form_tagger').submit(function() {
+			process();
+			return false;
+		});
+	});
+</script>
 
 </body>
 </html>
