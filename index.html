@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<meta charset="utf-8">
 	<title>Markmail - Markdown to templated email</title>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
 	<script type="text/javascript" src="libs/marked/lib/marked.js"></script>
@@ -19,10 +20,8 @@
 <p>To do for me:</p>
 
 <ul>
-	<li>Fix campaign "NaN" error</li>
 	<li>Download jQuery as a sub-module (at least then it can work offline)</li>
 	<li>Generalise from the campaigns below</li>
-	<li>Somehow generalise campaign code, not everyone will want "newsletter-YYYY-MM-DD"</li>
 </ul>
 
 <form id="form_tagger">
@@ -62,7 +61,7 @@
 
 <script>
 	$(document).ready(function(){
-		$('#campaign').val('newsletter-' + nextDayOccurence('wednesday'));
+		//$('#campaign').val('newsletter-' + nextDayOccurence('wednesday'));
 		$('#form_tagger').submit(function() {
 			process();
 			return false;
