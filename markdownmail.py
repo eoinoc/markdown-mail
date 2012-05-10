@@ -3,12 +3,12 @@
 '''
 ## What it does now
 
-A command-line tool that takes the name of a Markdown document, and copies
-its name to the clipboard.
+A command-line tool that takes a Markdown document, tags its 
+links with Google Analytics parameters and copies its name to the clipboard.
 
 ## What I want it to do
 
-A command-line tool to take a Markdown document and convert it for either
+A command-line tool that takes a Markdown document and converts it for either
 plain-text or HTML email messages.
 
 The result is copied to the clipboard.
@@ -19,6 +19,7 @@ Links found in the document are tagged with Google Analytics parameters.
 import argparse
 import sys
 import gtk
+import re
 
 def cmdline_parse():
 	"""Parse the Command-Line arguments and return the options object"""
@@ -30,7 +31,26 @@ def cmdline_parse():
 	parser.add_argument("filename", help="file in markdown format")
 	return parser.parse_args()
 
+def tag_urls(text):
+	# Thanks to <http://stackoverflow.com/a/828458/248220>
+	traffic_source = "bite_news"
+	medium = "email"
+	campaign = "newsletter-2000-01-01"
+	tags = 'utm_source='+traffic_source+'&utm_medium='+medium+'&utm_campaign='+campaign;
+	# urlfinder = re.compile('^(http:\/\/\S+)')
+	urlfinder2 = re.compile('(http:\/\/\S+[^>)])')
+	# text = urlfinder.sub(r'\1?'+tags, text)
+	return urlfinder2.sub(r'\1?'+tags, text)
+
+def template_plain_text(text):
+	return "Hi, {!firstname_fix}\n\n"+text
+
 if __name__ == '__main__':
 	cmdline_arguments = cmdline_parse()
-	gtk.Clipboard().set_text(cmdline_arguments.filename)
+	for_output = cmdline_arguments.filename
+	for_output = template_plain_text(for_output)
+	for_output = tag_urls(for_output)
+
+	print for_output
+	gtk.Clipboard().set_text(for_output)
 	gtk.Clipboard().store()
