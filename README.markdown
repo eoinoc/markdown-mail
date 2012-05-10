@@ -1,5 +1,15 @@
 # Markmail
 
+## Usage
+
+python markdownmail [markdown-file]
+
+## Description
+
+For the given Markdown document, it is templated, and tagged with Google Analytics and outputted either as HTML or plain-text email format.
+
+## Conceptual
+
 Input:
 
 * Markdown
@@ -8,11 +18,6 @@ Output:
 
 * Templated HTML email
 * Plain text email with signature
-
-## Todo
-
-* Tag campaign with "Next Wednesday" which I need for my own usecase
-* Don't hard-code list of campaigns
 
 ## About
 
