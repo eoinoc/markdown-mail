@@ -3,17 +3,14 @@
 '''
 ## What it does now
 
-A command-line tool that takes a Markdown document, tags its 
+A command-line tool that takes a Markdown document, templates it as a plaintext email, tags its 
 links with Google Analytics parameters and copies its name to the clipboard.
 
-## What I want it to do
+## Todo
 
-A command-line tool that takes a Markdown document and converts it for either
-plain-text or HTML email messages.
-
-The result is copied to the clipboard.
-
-Links found in the document are tagged with Google Analytics parameters.
+* Wrap long text for plaintext emails
+* Allow to specify if HTML email wanted (perhaps that should be the default)
+* Tag conext with HTML temtplates read from files
 '''
 
 import argparse
