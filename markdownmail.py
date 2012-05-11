@@ -31,18 +31,18 @@ def cmdline_parse():
 			description = 'Tag and template Markdown text and copy to clipboard.')
 
 	parser.add_argument('--tagdomain', help='domain which should be tagged with Google Analytics, without http://', default='www.bitesizeirishgaelic.com')
+	parser.add_argument('--traffic_source', help='traffic source label, such as the name of your email list, for Google Analytics', default='bite_news')
+	parser.add_argument('--medium', help='medium of traffic for Google Analytics (default: email)', default='email')
+	parser.add_argument('--campaign', help='campaign name for Google Analytics (default: newsletter-2000-01-01)', default='newsletter-2000-01-01')
 	parser.add_argument('filename', help="file in markdown format")
 	return parser.parse_args()
 
-def tag_urls(text):
+def tag_urls(text, args):
 	# Thanks to <http://stackoverflow.com/a/828458/248220>
-	traffic_source = "bite_news"
-	medium = "email"
-	campaign = "newsletter-2000-01-01"
-	tags = 'utm_source='+traffic_source+'&utm_medium='+medium+'&utm_campaign='+campaign;
+	tags = 'utm_source='+args.traffic_source+'&utm_medium='+args.medium+'&utm_campaign='+args.campaign;
 	# urlfinder = re.compile('^(http:\/\/\S+)')
 	# urlfinder2 = re.compile('(http:\/\/\S+[^>) \.])')
-	urlfinder2 = re.compile('(http:\/\/www.bitesizeirishgaelic.com\S+[^>) \.])')
+	urlfinder2 = re.compile('(http:\/\/'+args.tagdomain+'\S+[^>) \.])')
 	# text = urlfinder.sub(r'\1?'+tags, text)
 	return urlfinder2.sub(r'\1?'+tags, text)
 
@@ -57,7 +57,7 @@ if __name__ == '__main__':
 	cmdline_arguments = cmdline_parse()
 	for_output = read_input(cmdline_arguments.filename)
 	for_output = template_plain_text(for_output)
-	for_output = tag_urls(for_output)
+	for_output = tag_urls(for_output, cmdline_arguments)
 
 	print for_output
 	gtk.Clipboard().set_text(for_output)
