@@ -8,11 +8,12 @@ links with Google Analytics parameters and copies its name to the clipboard.
 
 ## Doing
 
-* Extract the campaign name from the filename, not specified
+* Get the source name from the directory name by default, but allow it to be specified by paramter instead
 
 ## Todo
 
 * Wrap long text for plaintext emails
+
 '''
 
 import argparse
@@ -29,7 +30,7 @@ def cmdline_parse():
 	
 	parser = argparse.ArgumentParser(description = 'Tag and template Markdown text and copy to clipboard.')
 	parser.add_argument('--tagdomain', help='domain which should be tagged with Google Analytics, without http://', default='www.bitesizeirishgaelic.com')
-	parser.add_argument('--traffic_source', help='traffic source label, such as the name of your email list, for Google Analytics', default='bite_news')
+	parser.add_argument('--traffic_source', help='traffic source label, such as the name of your email list, for Google Analytics (default is directory name that contains your makdown file)')
 	parser.add_argument('--medium', help='medium of traffic for Google Analytics (default: email)', default='email')
 	parser.add_argument('--plaintext', help='convert the output for plaintext email (defaults to HTML output)', action='store_true')
 	parser.add_argument('filename', help="file in markdown format")
@@ -38,7 +39,8 @@ def cmdline_parse():
 def tag_urls(text, args):
 	# Thanks to <http://stackoverflow.com/a/828458/248220>
 	campaign=extract_campaign_name(args.filename)
-	tags = 'utm_source='+args.traffic_source+'&utm_medium='+args.medium+'&utm_campaign='+campaign;
+	traffic_source=extract_traffic_source(args)
+	tags = 'utm_source='+traffic_source+'&utm_medium='+args.medium+'&utm_campaign='+campaign;
 	# urlfinder = re.compile('^(http:\/\/\S+)')
 	# urlfinder2 = re.compile('(http:\/\/\S+[^>) \.])')
 	urlfinder2 = re.compile('(http:\/\/'+args.tagdomain+'\S+[^">) \.])')
@@ -61,9 +63,24 @@ def extract_campaign_name(filename):
 def to_html(text):
 	return markdown.markdown(text)
 
+def extract_traffic_source(args):
+	traffic_source = ''
+	if args.traffic_source:
+		traffic_source=args.traffic_source
+	else:
+		traffic_source=extract_markdown_directory_name(args.filename)
+	return traffic_source
+
+def markdown_directory(markdown_filename):
+	return os.path.dirname(os.path.abspath(markdown_filename))
+
+def extract_markdown_directory_name(markdown_filename):
+	directory = markdown_directory(markdown_filename)
+	return os.path.split(directory)[1]
+
 def read_template(markdown_filename, section):
-	markdown_directory = os.path.dirname(os.path.abspath(markdown_filename))
-	templates_directory = markdown_directory+'/template'
+	current_directory = markdown_directory(markdown_filename)
+	templates_directory = current_directory+'/template'
 	template_file = templates_directory+'/'+section+'.html'
 	return read_input(template_file)
 
