@@ -54,11 +54,20 @@ def tag_urls(text, args):
 def prepend_greeting(text):
 	return "Hi, {!firstname_fix}\n\n"+text
 
-def append_html_header(text):
-	print os.path.dirname(os.path.abspath(cmdline_arguments.filename))
+def append_html_header(text, args):
+	return read_template(args.filename, 'header')+text
+
+def prepend_html_footer(text, args):
+	return text+read_template(args.filename, 'footer')
 
 def to_html(text):
 	return markdown.markdown(text)
+
+def read_template(markdown_filename, section):
+	markdown_directory = os.path.dirname(os.path.abspath(markdown_filename))
+	templates_directory = markdown_directory+'/template'
+	template_file = templates_directory+'/'+section+'.html'
+	return read_input(template_file)
 
 def read_input(filename):
 	file = open(filename)
@@ -70,6 +79,8 @@ if __name__ == '__main__':
 	for_output = prepend_greeting(for_output)
 	if not cmdline_arguments.plaintext:
 		for_output = to_html(for_output)
+		for_output = append_html_header(for_output, cmdline_arguments)
+		for_output = prepend_html_footer(for_output, cmdline_arguments)
 	for_output = tag_urls(for_output, cmdline_arguments)
 
 	print for_output
