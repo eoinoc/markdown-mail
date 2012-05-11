@@ -25,9 +25,7 @@ def cmdline_parse():
 
 	# Further documentation at <http://docs.python.org/howto/argparse.html#id1>
 	
-	parser = argparse.ArgumentParser(
-			description = 'Tag and template Markdown text and copy to clipboard.')
-
+	parser = argparse.ArgumentParser(description = 'Tag and template Markdown text and copy to clipboard.')
 	parser.add_argument('--tagdomain', help='domain which should be tagged with Google Analytics, without http://', default='www.bitesizeirishgaelic.com')
 	parser.add_argument('--traffic_source', help='traffic source label, such as the name of your email list, for Google Analytics', default='bite_news')
 	parser.add_argument('--medium', help='medium of traffic for Google Analytics (default: email)', default='email')
@@ -45,7 +43,7 @@ def tag_urls(text, args):
 	# text = urlfinder.sub(r'\1?'+tags, text)
 	return urlfinder2.sub(r'\1?'+tags, text)
 
-def template_plain_text(text):
+def prepend_greeting(text):
 	return "Hi, {!firstname_fix}\n\n"+text
 
 def to_html(text):
@@ -58,9 +56,8 @@ def read_input(filename):
 if __name__ == '__main__':
 	cmdline_arguments = cmdline_parse()
 	for_output = read_input(cmdline_arguments.filename)
-	if cmdline_arguments.plaintext: 
-		for_output = template_plain_text(for_output)
-	else:
+	for_output = prepend_greeting(for_output)
+	if not cmdline_arguments.plaintext:
 		for_output = to_html(for_output)
 	for_output = tag_urls(for_output, cmdline_arguments)
 
