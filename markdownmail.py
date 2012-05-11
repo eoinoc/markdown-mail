@@ -3,14 +3,21 @@
 '''
 ## What it does now
 
-A command-line tool that takes a Markdown document, templates it as a plaintext email, tags its 
+A command-line tool that takes a Markdown document, converts it to HTML (or keeps it as plain text), tags its 
 links with Google Analytics parameters and copies its name to the clipboard.
 
 ## Doing
 
+* Template content with HTML template files, based on the campaign name
+  * Where do we store the template files? Relative to script? Relative to Markdown file? Probably better relative to template file.
+  That would mean they're being stored in the same folder/sub-folder for access later on.
+
+  Requirement: subfolder templates/ relative to the Markdown file (by default)
+
+  Question: how to we calculate the path, relative to the provided filename
+
 ## Todo
 
-* Tag conent with HTML temtplates read from files
 * Wrap long text for plaintext emails
 '''
 
@@ -19,6 +26,7 @@ import sys
 import gtk
 import re
 import markdown
+import os
 
 def cmdline_parse():
 	"""Parse the Command-Line arguments and return the options object"""
@@ -45,6 +53,9 @@ def tag_urls(text, args):
 
 def prepend_greeting(text):
 	return "Hi, {!firstname_fix}\n\n"+text
+
+def append_html_header(text):
+	print os.path.dirname(os.path.abspath(cmdline_arguments.filename))
 
 def to_html(text):
 	return markdown.markdown(text)
