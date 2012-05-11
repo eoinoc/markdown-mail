@@ -8,8 +8,6 @@ links with Google Analytics parameters and copies its name to the clipboard.
 
 ## Doing
 
-* Get the source name from the directory name by default, but allow it to be specified by paramter instead
-
 ## Todo
 
 * Wrap long text for plaintext emails
