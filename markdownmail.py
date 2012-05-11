@@ -8,8 +8,6 @@ links with Google Analytics parameters and copies its name to the clipboard.
 
 ## Doing
 
-* Allow to specify if HTML email wanted (perhaps that should be the default)
-
 ## Todo
 
 * Tag conent with HTML temtplates read from files
@@ -20,6 +18,7 @@ import argparse
 import sys
 import gtk
 import re
+import markdown
 
 def cmdline_parse():
 	"""Parse the Command-Line arguments and return the options object"""
@@ -42,12 +41,15 @@ def tag_urls(text, args):
 	tags = 'utm_source='+args.traffic_source+'&utm_medium='+args.medium+'&utm_campaign='+args.campaign;
 	# urlfinder = re.compile('^(http:\/\/\S+)')
 	# urlfinder2 = re.compile('(http:\/\/\S+[^>) \.])')
-	urlfinder2 = re.compile('(http:\/\/'+args.tagdomain+'\S+[^>) \.])')
+	urlfinder2 = re.compile('(http:\/\/'+args.tagdomain+'\S+[^">) \.])')
 	# text = urlfinder.sub(r'\1?'+tags, text)
 	return urlfinder2.sub(r'\1?'+tags, text)
 
 def template_plain_text(text):
 	return "Hi, {!firstname_fix}\n\n"+text
+
+def to_html(text):
+	return markdown.markdown(text)
 
 def read_input(filename):
 	file = open(filename)
@@ -58,6 +60,8 @@ if __name__ == '__main__':
 	for_output = read_input(cmdline_arguments.filename)
 	if cmdline_arguments.plaintext: 
 		for_output = template_plain_text(for_output)
+	else:
+		for_output = to_html(for_output)
 	for_output = tag_urls(for_output, cmdline_arguments)
 
 	print for_output

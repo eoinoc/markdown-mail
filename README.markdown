@@ -1,4 +1,10 @@
-# Markmail
+# Markdown Mail
+
+## Dependencies
+
+* [python-markdown](http://packages.python.org/Markdown/) module. Install it:
+
+    sudo easy_install markdown
 
 ## Usage
 
