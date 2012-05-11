@@ -30,7 +30,7 @@ def cmdline_parse():
 	parser.add_argument('--tagdomain', help='domain which should be tagged with Google Analytics, without http://', default='www.bitesizeirishgaelic.com')
 	parser.add_argument('--traffic_source', help='traffic source label, such as the name of your email list, for Google Analytics (default is directory name that contains your makdown file)')
 	parser.add_argument('--medium', help='medium of traffic for Google Analytics (default: email)', default='email')
-	parser.add_argument('--plaintext', help='convert the output for plaintext email (defaults to HTML output)', action='store_true')
+	parser.add_argument('--plaintext', '-p', help='convert the output for plaintext email (defaults to HTML output)', action='store_true')
 	parser.add_argument('filename', help="file in markdown format")
 	return parser.parse_args()
 
