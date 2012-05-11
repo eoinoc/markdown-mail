@@ -6,6 +6,10 @@
 A command-line tool that takes a Markdown document, templates it as a plaintext email, tags its 
 links with Google Analytics parameters and copies its name to the clipboard.
 
+## Doing
+
+* Read in the contents of a markdown file
+
 ## Todo
 
 * Wrap long text for plaintext emails
@@ -35,16 +39,20 @@ def tag_urls(text):
 	campaign = "newsletter-2000-01-01"
 	tags = 'utm_source='+traffic_source+'&utm_medium='+medium+'&utm_campaign='+campaign;
 	# urlfinder = re.compile('^(http:\/\/\S+)')
-	urlfinder2 = re.compile('(http:\/\/\S+[^>)])')
+	urlfinder2 = re.compile('(http:\/\/\S+[^>) \.])')
 	# text = urlfinder.sub(r'\1?'+tags, text)
 	return urlfinder2.sub(r'\1?'+tags, text)
 
 def template_plain_text(text):
 	return "Hi, {!firstname_fix}\n\n"+text
 
+def read_input(filename):
+	file = open(filename)
+	return file.read()
+
 if __name__ == '__main__':
 	cmdline_arguments = cmdline_parse()
-	for_output = cmdline_arguments.filename
+	for_output = read_input(cmdline_arguments.filename)
 	for_output = template_plain_text(for_output)
 	for_output = tag_urls(for_output)
 
