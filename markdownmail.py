@@ -8,11 +8,9 @@ links with Google Analytics parameters and copies its name to the clipboard.
 
 ## Doing
 
-* Fix error where http://www.bitesizeirishgaelic.com/ link is not being tagged
+* Wrap long text for plaintext emails
 
 ## Todo
-
-* Wrap long text for plaintext emails
 
 '''
 
