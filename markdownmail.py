@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# coding: utf8
 
 '''
 ## What it does now
@@ -8,10 +9,11 @@ links with Google Analytics parameters and copies its name to the clipboard.
 
 ## Doing
 
-* Wrap long text for plaintext emails
+* Correctly match only URLs, and tag them -- bugfixing
 
 ## Todo
 
+* Wrap long text for plaintext emails - change back to the commented-out line which wraps text
 '''
 
 import argparse
@@ -20,6 +22,7 @@ import gtk
 import re
 import markdown
 import os
+import textwrap
 
 def cmdline_parse():
 	"""Parse the Command-Line arguments and return the options object"""
@@ -35,15 +38,27 @@ def cmdline_parse():
 	return parser.parse_args()
 
 def tag_urls(text, args):
+
+	# And e.g. to add <a> tags for links could be done like this: 
+	
+	# re_match_urls.sub(lambda x: '<a href="%(url)s">%(url)s</a>' % dict(url=str(x.group())), string_to_match) 
+
 	# Thanks to <http://stackoverflow.com/a/828458/248220>
 	campaign=extract_campaign_name(args.filename)
 	traffic_source=extract_traffic_source(args)
 	tags = 'utm_source='+traffic_source+'&utm_medium='+args.medium+'&utm_campaign='+campaign;
+	
 	# urlfinder = re.compile('^(http:\/\/\S+)')
 	# urlfinder2 = re.compile('(http:\/\/\S+[^>) \.])')
-	urlfinder2 = re.compile('(http:\/\/'+args.tagdomain+'(\S+)?[^">) \.])')
 	# text = urlfinder.sub(r'\1?'+tags, text)
-	return urlfinder2.sub(r'\1?'+tags, text)
+
+	# Trying to use the following expression to match URLs, but it doesn't seem to be working.
+	# The urlfinder2 **was** working, just with problems
+	urlfinder2 = re.compile('(http:\/\/'+args.tagdomain+'(\S+)?[^\]">) \.])')
+	re_match_urls = re.compile(r"""((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|(([^\s()<>]+|(([^\s()<>]+)))*))+(?:(([^\s()<>]+|(([‌​^\s()<>]+)))*)|[^\s`!()[]{};:'".,<>?«»“”‘’]))""", re.DOTALL)
+
+	# return urlfinder2.sub(r'\1?'+tags, text)
+	return re_match_urls.sub(r'\1?'+tags, text)
 
 def prepend_greeting(text):
 	return "Hi, {!firstname_fix}\n\n"+text
@@ -86,10 +101,30 @@ def read_input(filename):
 	file = open(filename)
 	return file.read()
 
+def plaintext_wrap(text):
+	'''Wrap a full document of text, not the single paragraph handled by the standard TextWrapper'''
+	# # Thanks to <http://code.activestate.com/recipes/358228-extend-textwraptextwrapper-to-handle-multiple-para/>
+	# para_edge = re.compile(r"(\n\s*\n)", re.MULTILINE)
+	# paragraphs = para_edge.split(text)
+	# wrapped_lines = []
+	# for paragraph in paragraphs:
+	# 	if paragraph.isspace():
+	# 		wrapped_lines.append('')
+	# 	else:
+	# 		for line in textwrap.wrap(paragraph, 79):
+	# 		   wrapped_lines.append(line)
+	# return '\n'.join(wrapped_lines)
+
+	# Thanks <http://stackoverflow.com/questions/1406493/splitting-a-string-with-no-line-breaks-into-a-list-of-lines-with-a-maximum-colum>
+	# return '\n'.join('\n'.join(textwrap.wrap(block, 80)) for block in text.splitlines(True))
+	return ''.join(text.splitlines(True))
+
 if __name__ == '__main__':
 	cmdline_arguments = cmdline_parse()
 	for_output = read_input(cmdline_arguments.filename)
 	for_output = prepend_greeting(for_output)
+	if cmdline_arguments.plaintext:
+		for_output = plaintext_wrap(for_output)
 	if not cmdline_arguments.plaintext:
 		for_output = to_html(for_output)
 		for_output = append_html_header(for_output, cmdline_arguments)
