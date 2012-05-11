@@ -1,3 +1,0 @@
-[submodule "libs/marked"]
-	path = libs/marked
-	url = git://github.com/chjj/marked.git
