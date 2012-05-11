@@ -8,7 +8,7 @@ links with Google Analytics parameters and copies its name to the clipboard.
 
 ## Doing
 
-* Read in the contents of a markdown file
+* Only tag URLs matching a certain domain
 
 ## Todo
 
@@ -29,7 +29,9 @@ def cmdline_parse():
 	
 	parser = argparse.ArgumentParser(
 			description = 'Tag and template Markdown text and copy to clipboard.')
-	parser.add_argument("filename", help="file in markdown format")
+
+	parser.add_argument('--tagdomain', help='domain which should be tagged with Google Analytics, without http://', default='www.bitesizeirishgaelic.com')
+	parser.add_argument('filename', help="file in markdown format")
 	return parser.parse_args()
 
 def tag_urls(text):
@@ -39,7 +41,8 @@ def tag_urls(text):
 	campaign = "newsletter-2000-01-01"
 	tags = 'utm_source='+traffic_source+'&utm_medium='+medium+'&utm_campaign='+campaign;
 	# urlfinder = re.compile('^(http:\/\/\S+)')
-	urlfinder2 = re.compile('(http:\/\/\S+[^>) \.])')
+	# urlfinder2 = re.compile('(http:\/\/\S+[^>) \.])')
+	urlfinder2 = re.compile('(http:\/\/www.bitesizeirishgaelic.com\S+[^>) \.])')
 	# text = urlfinder.sub(r'\1?'+tags, text)
 	return urlfinder2.sub(r'\1?'+tags, text)
 
