@@ -8,13 +8,12 @@ links with Google Analytics parameters and copies its name to the clipboard.
 
 ## Doing
 
-* Only tag URLs matching a certain domain
+* Allow to specify if HTML email wanted (perhaps that should be the default)
 
 ## Todo
 
+* Tag conent with HTML temtplates read from files
 * Wrap long text for plaintext emails
-* Allow to specify if HTML email wanted (perhaps that should be the default)
-* Tag conext with HTML temtplates read from files
 '''
 
 import argparse
@@ -34,6 +33,7 @@ def cmdline_parse():
 	parser.add_argument('--traffic_source', help='traffic source label, such as the name of your email list, for Google Analytics', default='bite_news')
 	parser.add_argument('--medium', help='medium of traffic for Google Analytics (default: email)', default='email')
 	parser.add_argument('--campaign', help='campaign name for Google Analytics (default: newsletter-2000-01-01)', default='newsletter-2000-01-01')
+	parser.add_argument('--plaintext', help='convert the output for plaintext email (defaults to HTML output)', action='store_true')
 	parser.add_argument('filename', help="file in markdown format")
 	return parser.parse_args()
 
@@ -56,7 +56,8 @@ def read_input(filename):
 if __name__ == '__main__':
 	cmdline_arguments = cmdline_parse()
 	for_output = read_input(cmdline_arguments.filename)
-	for_output = template_plain_text(for_output)
+	if cmdline_arguments.plaintext: 
+		for_output = template_plain_text(for_output)
 	for_output = tag_urls(for_output, cmdline_arguments)
 
 	print for_output
