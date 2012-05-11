@@ -8,11 +8,13 @@
 
 ## Usage
 
-python markdownmail [markdown-file]
+python markdownmail [campaign-name.markdown]
 
 ## Description
 
 For the given Markdown document, it is templated, and tagged with Google Analytics and outputted either as HTML or plain-text email format.
+
+The basename of the markdown file is used as the campaign name given to Google Analytics.
 
 ## Conceptual
 

@@ -8,13 +8,7 @@ links with Google Analytics parameters and copies its name to the clipboard.
 
 ## Doing
 
-* Template content with HTML template files, based on the campaign name
-  * Where do we store the template files? Relative to script? Relative to Markdown file? Probably better relative to template file.
-  That would mean they're being stored in the same folder/sub-folder for access later on.
-
-  Requirement: subfolder templates/ relative to the Markdown file (by default)
-
-  Question: how to we calculate the path, relative to the provided filename
+* Extract the campaign name from the filename, not specified
 
 ## Todo
 
@@ -37,14 +31,14 @@ def cmdline_parse():
 	parser.add_argument('--tagdomain', help='domain which should be tagged with Google Analytics, without http://', default='www.bitesizeirishgaelic.com')
 	parser.add_argument('--traffic_source', help='traffic source label, such as the name of your email list, for Google Analytics', default='bite_news')
 	parser.add_argument('--medium', help='medium of traffic for Google Analytics (default: email)', default='email')
-	parser.add_argument('--campaign', help='campaign name for Google Analytics (default: newsletter-2000-01-01)', default='newsletter-2000-01-01')
 	parser.add_argument('--plaintext', help='convert the output for plaintext email (defaults to HTML output)', action='store_true')
 	parser.add_argument('filename', help="file in markdown format")
 	return parser.parse_args()
 
 def tag_urls(text, args):
 	# Thanks to <http://stackoverflow.com/a/828458/248220>
-	tags = 'utm_source='+args.traffic_source+'&utm_medium='+args.medium+'&utm_campaign='+args.campaign;
+	campaign=extract_campaign_name(args.filename)
+	tags = 'utm_source='+args.traffic_source+'&utm_medium='+args.medium+'&utm_campaign='+campaign;
 	# urlfinder = re.compile('^(http:\/\/\S+)')
 	# urlfinder2 = re.compile('(http:\/\/\S+[^>) \.])')
 	urlfinder2 = re.compile('(http:\/\/'+args.tagdomain+'\S+[^">) \.])')
@@ -59,6 +53,10 @@ def append_html_header(text, args):
 
 def prepend_html_footer(text, args):
 	return text+read_template(args.filename, 'footer')
+
+def extract_campaign_name(filename):
+	split=os.path.splitext(filename)
+	return split[0]
 
 def to_html(text):
 	return markdown.markdown(text)
