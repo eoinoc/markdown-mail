@@ -8,6 +8,8 @@ links with Google Analytics parameters and copies its name to the clipboard.
 
 ## Doing
 
+* Fix error where http://www.bitesizeirishgaelic.com/ link is not being tagged
+
 ## Todo
 
 * Wrap long text for plaintext emails
@@ -41,7 +43,7 @@ def tag_urls(text, args):
 	tags = 'utm_source='+traffic_source+'&utm_medium='+args.medium+'&utm_campaign='+campaign;
 	# urlfinder = re.compile('^(http:\/\/\S+)')
 	# urlfinder2 = re.compile('(http:\/\/\S+[^>) \.])')
-	urlfinder2 = re.compile('(http:\/\/'+args.tagdomain+'\S+[^">) \.])')
+	urlfinder2 = re.compile('(http:\/\/'+args.tagdomain+'(\S+)?[^">) \.])')
 	# text = urlfinder.sub(r'\1?'+tags, text)
 	return urlfinder2.sub(r'\1?'+tags, text)
 
