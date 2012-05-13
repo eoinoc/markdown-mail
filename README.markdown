@@ -1,34 +1,45 @@
 # Markdown Mail
 
+For the given Markdown document, tag specified URLs with Google
+Analytics parameters and copy to the clipboard.
+
+If the output is to be in HTML (default if -p [plaintext] is 
+not specified), then the document is also converted to HTML.
+
+Also for HTML, if the template files
+./template/{header,footer}.html are found, the output is also
+wrapped with these files.
+
+By default, the basename of the Markdown file is used as the 
+campaign name given to Google Analytics.
+
+By default, the name of the folder that contains the Markdown 
+file is used as the traffic source value given to Google Analytics.
+
 ## Dependencies
 
-* [python-markdown](http://packages.python.org/Markdown/) module. Install it:
+* [python-markdown](http://packages.python.org/Markdown/) 
+  module. Install it:
 
     sudo easy_install markdown
 
+* Gnome window manager (since my copy-to-clipboard is not 
+  platform independent in its current form)
+
 ## Usage
 
-python markdownmail [campaign-name.markdown]
-
-## Description
-
-For the given Markdown document, it is templated, and tagged with Google Analytics and outputted either as HTML or plain-text email format.
-
-The basename of the markdown file is used as the campaign name given to Google Analytics.
-
-## Conceptual
-
-Input:
-
-* Markdown
-
-Output:
-
-* Templated HTML email
-* Plain text email with signature
+python markdownmail.py [campaign-name.markdown]
 
 ## About
 
-This is a work in progress, to see if I can set up an open project.
+Eoin Ó Conchúir <e@eoinoc.net>
 
-Eoin <e@eoinoc.net>
+I welcome questions and pullrequests at [this project's
+GitHub repo.][1] 
+
+[1]: https://github.com/eoinoc/markdown-mail> 
+     "Project on GitHub"
+
+## Todo
+
+Add MIT license declaration

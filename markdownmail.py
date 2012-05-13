@@ -1,16 +1,6 @@
 #!/usr/bin/python
 # coding: utf8
 
-'''
-## Doing
-
-* Wrap long text for plaintext emails - change back to the commented-out line which wraps text - I'm thinking this 
-should be up to the text editor rather than trying to do it in a more automated way.
-
-## Todo
-
-'''
-
 import argparse
 import sys
 import gtk
@@ -22,8 +12,7 @@ import textwrap
 def cmdline_parse():
 	"""Parse the Command-Line arguments and return the options object"""
 
-	# Further documentation at <http://docs.python.org/howto/argparse.html#id1>
-	
+	# Further documentation at <http://docs.python.org/howto/argparse.html#id1>	
 	parser = argparse.ArgumentParser(description = 'Tag and template Markdown text and copy to clipboard.')
 	parser.add_argument('--tagdomain', help='domain which should be tagged with Google Analytics, including the protocol such as http://', default='http://www.bitesizeirishgaelic.com')
 	parser.add_argument('--traffic_source', help='traffic source label, such as the name of your email list, for Google Analytics (default is directory name that contains your makdown file)')
@@ -38,7 +27,6 @@ def generate_google_analytics_url_params(args):
 	return 'utm_source='+traffic_source+'&utm_medium='+args.medium+'&utm_campaign='+campaign;
 
 def tag_urls_with_params(text, domain_to_match, url_params):
-	#match_domain = 'http://www.bitesizeirishgaelic.com'
 	domain_to_match = re.sub(r'\.', '\.', domain_to_match)
 
 	# Tag URLS like: "[1]: http://www.google.com"
@@ -65,9 +53,6 @@ def extract_campaign_name(filename):
 	split=os.path.splitext(filename)
 	return split[0]
 
-def to_html(text):
-	return markdown.markdown(text)
-
 def extract_traffic_source(args):
 	traffic_source = ''
 	if args.traffic_source:
@@ -75,6 +60,9 @@ def extract_traffic_source(args):
 	else:
 		traffic_source=extract_markdown_directory_name(args.filename)
 	return traffic_source
+
+def to_html(text):
+	return markdown.markdown(text)
 
 def markdown_directory(markdown_filename):
 	return os.path.dirname(os.path.abspath(markdown_filename))
@@ -93,6 +81,10 @@ def read_input(filename):
 	file = open(filename)
 	return file.read()
 
+def copy_to_clipboard(text):
+	gtk.Clipboard().set_text(for_output)
+	gtk.Clipboard().store()
+
 if __name__ == '__main__':
 	cmdline_arguments = cmdline_parse()
 	for_output = read_input(cmdline_arguments.filename)
@@ -103,6 +95,3 @@ if __name__ == '__main__':
 	domain_to_tag = cmdline_arguments.tagdomain
 	google_url_params = generate_google_analytics_url_params(cmdline_arguments)
 	for_output = tag_urls_with_params(for_output, domain_to_tag, google_url_params)
-
-	gtk.Clipboard().set_text(for_output)
-	gtk.Clipboard().store()
