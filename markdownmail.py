@@ -30,7 +30,7 @@ def cmdline_parse():
 	# Further documentation at <http://docs.python.org/howto/argparse.html#id1>
 	
 	parser = argparse.ArgumentParser(description = 'Tag and template Markdown text and copy to clipboard.')
-	parser.add_argument('--tagdomain', help='domain which should be tagged with Google Analytics, without http://', default='www.bitesizeirishgaelic.com')
+	parser.add_argument('--tagdomain', help='domain which should be tagged with Google Analytics, including the protocol such as http://', default='http://www.bitesizeirishgaelic.com')
 	parser.add_argument('--traffic_source', help='traffic source label, such as the name of your email list, for Google Analytics (default is directory name that contains your makdown file)')
 	parser.add_argument('--medium', help='medium of traffic for Google Analytics (default: email)', default='email')
 	parser.add_argument('--plaintext', '-p', help='convert the output for plaintext email (defaults to HTML output)', action='store_true')
@@ -42,20 +42,21 @@ def generate_google_analytics_url_params(args):
 	campaign = extract_campaign_name(args.filename)
 	return 'utm_source='+traffic_source+'&utm_medium='+args.medium+'&utm_campaign='+campaign;
 
-def tag_urls(text, url_params):
+def tag_urls_with_params(text, domain_to_match, url_params):
 	#match_domain = 'http://www.bitesizeirishgaelic.com'
+	domain_to_match = re.sub(r'\.', '\.', domain_to_match)
 
 	# Tag URLS like: "[1]: http://www.google.com"
-	re_markdown_reference = re.compile(r'(^[ ]{0,3}\[)([^\]]*)(\]:\s*[^ ]*)', re.MULTILINE)
-	text = re.sub(re_markdown_reference, r'\1\2\3?'+tags, text)
+	re_markdown_reference = re.compile(r'(^[ ]{0,3}\[)([^\]]*)(\]: %s\s*[^ ]*)' % domain_to_match, re.MULTILINE)
+	text = re.sub(re_markdown_reference, r'\1\2\3?'+url_params, text)
 
 	# Tag URLs like: "<http://www.google.com>"
-	re_markdown_inline = re.compile(r'(<http[^ ]+)(>)', re.MULTILINE)
-	text = re.sub(re_markdown_inline, r'\1?'+tags+r'\2', text)
+	re_markdown_inline = re.compile(r'(<%s[^ ]*)(>)' % domain_to_match, re.MULTILINE)
+	text = re.sub(re_markdown_inline, r'\1?'+url_params+r'\2', text)
 
 	# Tag URLs like: "[This should be linked.](http://www.google.com)"
-	re_markdown_adjacent = re.compile(r'(\[[^\]]+\]\([^\)]+)(\))', re.MULTILINE)
-	text = re.sub(re_markdown_adjacent, r'\1?'+tags+r'\2', text)
+	re_markdown_adjacent = re.compile(r'(\[[^\]]+\]\(%s[^\)]*)(\))' % domain_to_match, re.MULTILINE)
+	text = re.sub(re_markdown_adjacent, r'\1?'+url_params+r'\2', text)
 
 	return text
 
@@ -128,8 +129,9 @@ if __name__ == '__main__':
 		for_output = to_html(for_output)
 		for_output = append_html_header(for_output, cmdline_arguments)
 		for_output = prepend_html_footer(for_output, cmdline_arguments)
-	google_url_params = generate_google_analytics_url_params(args)
-	for_output = tag_urls(for_output, google_url_params)
+	domain_to_tag = cmdline_arguments.tagdomain
+	google_url_params = generate_google_analytics_url_params(cmdline_arguments)
+	for_output = tag_urls_with_params(for_output, domain_to_tag, google_url_params)
 
 	print for_output
 	gtk.Clipboard().set_text(for_output)
