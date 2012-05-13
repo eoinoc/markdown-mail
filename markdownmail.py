@@ -2,18 +2,13 @@
 # coding: utf8
 
 '''
-## What it does now
-
-A command-line tool that takes a Markdown document, converts it to HTML (or keeps it as plain text), tags its 
-links with Google Analytics parameters and copies its name to the clipboard.
-
 ## Doing
 
-* Only tag specified domain
+* Wrap long text for plaintext emails - change back to the commented-out line which wraps text - I'm thinking this 
+should be up to the text editor rather than trying to do it in a more automated way.
 
 ## Todo
 
-* Wrap long text for plaintext emails - change back to the commented-out line which wraps text
 '''
 
 import argparse
@@ -60,9 +55,6 @@ def tag_urls_with_params(text, domain_to_match, url_params):
 
 	return text
 
-def prepend_greeting(text):
-	return "Hi, {!firstname_fix}\n\n"+text
-
 def append_html_header(text, args):
 	return read_template(args.filename, 'header')+text
 
@@ -101,30 +93,9 @@ def read_input(filename):
 	file = open(filename)
 	return file.read()
 
-def plaintext_wrap(text):
-	'''Wrap a full document of text, not the single paragraph handled by the standard TextWrapper'''
-	# # Thanks to <http://code.activestate.com/recipes/358228-extend-textwraptextwrapper-to-handle-multiple-para/>
-	# para_edge = re.compile(r"(\n\s*\n)", re.MULTILINE)
-	# paragraphs = para_edge.split(text)
-	# wrapped_lines = []
-	# for paragraph in paragraphs:
-	# 	if paragraph.isspace():
-	# 		wrapped_lines.append('')
-	# 	else:
-	# 		for line in textwrap.wrap(paragraph, 79):
-	# 		   wrapped_lines.append(line)
-	# return '\n'.join(wrapped_lines)
-
-	# Thanks <http://stackoverflow.com/questions/1406493/splitting-a-string-with-no-line-breaks-into-a-list-of-lines-with-a-maximum-colum>
-	# return '\n'.join('\n'.join(textwrap.wrap(block, 80)) for block in text.splitlines(True))
-	return ''.join(text.splitlines(True))
-
 if __name__ == '__main__':
 	cmdline_arguments = cmdline_parse()
 	for_output = read_input(cmdline_arguments.filename)
-	for_output = prepend_greeting(for_output)
-	if cmdline_arguments.plaintext:
-		for_output = plaintext_wrap(for_output)
 	if not cmdline_arguments.plaintext:
 		for_output = to_html(for_output)
 		for_output = append_html_header(for_output, cmdline_arguments)
