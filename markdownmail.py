@@ -75,7 +75,11 @@ def read_template(markdown_filename, section):
 	current_directory = markdown_directory(markdown_filename)
 	templates_directory = current_directory+'/template'
 	template_file = templates_directory+'/'+section+'.html'
-	return read_input(template_file)
+	
+	output = ''
+	if os.path.exists(template_file):
+		output = read_input(template_file)
+	return output
 
 def read_input(filename):
 	file = open(filename)
