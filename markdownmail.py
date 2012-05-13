@@ -104,6 +104,5 @@ if __name__ == '__main__':
 	google_url_params = generate_google_analytics_url_params(cmdline_arguments)
 	for_output = tag_urls_with_params(for_output, domain_to_tag, google_url_params)
 
-	print for_output
 	gtk.Clipboard().set_text(for_output)
 	gtk.Clipboard().store()
