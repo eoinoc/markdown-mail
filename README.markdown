@@ -30,16 +30,20 @@ file is used as the traffic source value given to Google Analytics.
 
 python markdownmail.py [campaign-name.markdown]
 
-## About
+## License
 
-Eoin Ó Conchúir <e@eoinoc.net>
+Copyright (c) 2012 Eoin Ó Conchúir.
+
+Markdown Mail is licensed under The MIT License provided by 
+the Open Source Initiative. See the file COPYING for the
+license.
+
+## About author
+
+Contact Eoin at <e@eoinoc.net>.
 
 I welcome questions and pullrequests at [this project's
 GitHub repo.][1] 
 
 [1]: https://github.com/eoinoc/markdown-mail> 
      "Project on GitHub"
-
-## Todo
-
-Add MIT license declaration
