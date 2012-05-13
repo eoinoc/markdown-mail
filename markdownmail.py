@@ -43,11 +43,20 @@ def tag_urls_with_params(text, domain_to_match, url_params):
 
 	return text
 
+def tag_marked_url_with_params(html, url_params):
+	return re.sub('#tag-google-analtyics', '?'+url_params, html)
+
 def append_html_header(text, args):
-	return read_template(args.filename, 'header')+text
+	header = read_template(args.filename, 'header')
+	url_params = generate_google_analytics_url_params(args)
+	header = tag_marked_url_with_params(header, url_params)
+	return header+text
 
 def prepend_html_footer(text, args):
-	return text+read_template(args.filename, 'footer')
+	footer = read_template(args.filename, 'footer')
+	url_params = generate_google_analytics_url_params(args)
+	footer = tag_marked_url_with_params(footer, url_params)
+	return text+footer
 
 def extract_campaign_name(filename):
 	split=os.path.splitext(filename)
@@ -92,10 +101,11 @@ def copy_to_clipboard(text):
 if __name__ == '__main__':
 	cmdline_arguments = cmdline_parse()
 	for_output = read_input(cmdline_arguments.filename)
+	domain_to_tag = cmdline_arguments.tagdomain
+	google_url_params = generate_google_analytics_url_params(cmdline_arguments)
+	for_output = tag_urls_with_params(for_output, domain_to_tag, google_url_params)
 	if not cmdline_arguments.plaintext:
 		for_output = to_html(for_output)
 		for_output = append_html_header(for_output, cmdline_arguments)
 		for_output = prepend_html_footer(for_output, cmdline_arguments)
-	domain_to_tag = cmdline_arguments.tagdomain
-	google_url_params = generate_google_analytics_url_params(cmdline_arguments)
-	for_output = tag_urls_with_params(for_output, domain_to_tag, google_url_params)
+	copy_to_clipboard(for_output)
