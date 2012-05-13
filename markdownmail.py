@@ -9,7 +9,7 @@ links with Google Analytics parameters and copies its name to the clipboard.
 
 ## Doing
 
-* Correctly match only URLs, and tag them -- bugfixing
+* Only tag specified domain
 
 ## Todo
 
@@ -37,28 +37,27 @@ def cmdline_parse():
 	parser.add_argument('filename', help="file in markdown format")
 	return parser.parse_args()
 
-def tag_urls(text, args):
+def generate_google_analytics_url_params(args):
+	traffic_source = extract_traffic_source(args)
+	campaign = extract_campaign_name(args.filename)
+	return 'utm_source='+traffic_source+'&utm_medium='+args.medium+'&utm_campaign='+campaign;
 
-	# And e.g. to add <a> tags for links could be done like this: 
-	
-	# re_match_urls.sub(lambda x: '<a href="%(url)s">%(url)s</a>' % dict(url=str(x.group())), string_to_match) 
+def tag_urls(text, url_params):
+	#match_domain = 'http://www.bitesizeirishgaelic.com'
 
-	# Thanks to <http://stackoverflow.com/a/828458/248220>
-	campaign=extract_campaign_name(args.filename)
-	traffic_source=extract_traffic_source(args)
-	tags = 'utm_source='+traffic_source+'&utm_medium='+args.medium+'&utm_campaign='+campaign;
-	
-	# urlfinder = re.compile('^(http:\/\/\S+)')
-	# urlfinder2 = re.compile('(http:\/\/\S+[^>) \.])')
-	# text = urlfinder.sub(r'\1?'+tags, text)
+	# Tag URLS like: "[1]: http://www.google.com"
+	re_markdown_reference = re.compile(r'(^[ ]{0,3}\[)([^\]]*)(\]:\s*[^ ]*)', re.MULTILINE)
+	text = re.sub(re_markdown_reference, r'\1\2\3?'+tags, text)
 
-	# Trying to use the following expression to match URLs, but it doesn't seem to be working.
-	# The urlfinder2 **was** working, just with problems
-	urlfinder2 = re.compile('(http:\/\/'+args.tagdomain+'(\S+)?[^\]">) \.])')
-	re_match_urls = re.compile(r"""((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|(([^\s()<>]+|(([^\s()<>]+)))*))+(?:(([^\s()<>]+|(([‌​^\s()<>]+)))*)|[^\s`!()[]{};:'".,<>?«»“”‘’]))""", re.DOTALL)
+	# Tag URLs like: "<http://www.google.com>"
+	re_markdown_inline = re.compile(r'(<http[^ ]+)(>)', re.MULTILINE)
+	text = re.sub(re_markdown_inline, r'\1?'+tags+r'\2', text)
 
-	# return urlfinder2.sub(r'\1?'+tags, text)
-	return re_match_urls.sub(r'\1?'+tags, text)
+	# Tag URLs like: "[This should be linked.](http://www.google.com)"
+	re_markdown_adjacent = re.compile(r'(\[[^\]]+\]\([^\)]+)(\))', re.MULTILINE)
+	text = re.sub(re_markdown_adjacent, r'\1?'+tags+r'\2', text)
+
+	return text
 
 def prepend_greeting(text):
 	return "Hi, {!firstname_fix}\n\n"+text
@@ -129,7 +128,8 @@ if __name__ == '__main__':
 		for_output = to_html(for_output)
 		for_output = append_html_header(for_output, cmdline_arguments)
 		for_output = prepend_html_footer(for_output, cmdline_arguments)
-	for_output = tag_urls(for_output, cmdline_arguments)
+	google_url_params = generate_google_analytics_url_params(args)
+	for_output = tag_urls(for_output, google_url_params)
 
 	print for_output
 	gtk.Clipboard().set_text(for_output)
