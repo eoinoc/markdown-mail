@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # coding: utf8
 
+# Bug: the "campaign" extracts the full path, not just 
+
 import argparse
 import sys
 import gtk
@@ -59,7 +61,7 @@ def prepend_html_footer(text, args):
 	return text+footer
 
 def extract_campaign_name(filename):
-	split=os.path.splitext(filename)
+	split=os.path.splitext(os.path.basename(filename))
 	return split[0]
 
 def extract_traffic_source(args):
