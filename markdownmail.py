@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # coding: utf8
 
-# Bug: the "campaign" extracts the full path, not just 
-
 import argparse
 import sys
 import gtk
