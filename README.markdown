@@ -18,10 +18,14 @@ file is used as the traffic source value given to Google Analytics.
 
 ## Dependencies
 
+* Python's pip package manager. In Debian install it as:
+
+    sudo apt-get install python-pip
+
 * [python-markdown](http://packages.python.org/Markdown/) 
   module. Install it:
 
-    sudo easy_install markdown
+    sudo pip install markdown
 
 * Gnome window manager (since my copy-to-clipboard is not 
   platform independent in its current form)
