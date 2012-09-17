@@ -18,10 +18,6 @@ Good if you want to send HTML email.
 If the template files `./template/{header,footer}.html` are found, 
 then output is also wrapped with these files.
 
-Also see [Premailer](https://github.com/alexdunae/premailer) for
-converting normal HTMl/CSS to inline CSS. Run this on your
-template files before storing them in the template folder.
-
 By default, the basename of the Markdown file is used as the 
 campaign name given to Google Analytics.
 
@@ -38,6 +34,12 @@ file is used as the traffic source value given to Google Analytics.
   module. Install it:
 
     sudo pip install markdown
+
+* [pynliner](http://packages.python.org/pynliner/) module.
+  Install it:
+
+    sudo pip install cssutils
+    sudo pip install pynliner
 
 * Gnome window manager (since my copy-to-clipboard is not 
   platform independent in its current form)
@@ -61,5 +63,5 @@ Contact Eoin at <e@eoinoc.net>.
 I welcome questions and pullrequests at [this project's
 GitHub repo.][1] 
 
-[1]: https://github.com/eoinoc/markdown-mail> 
+[1]: https://github.com/eoinoc/markdown-mail
      "Project on GitHub"

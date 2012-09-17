@@ -6,6 +6,7 @@ import gtk
 import re
 import markdown
 import os
+import pynliner
 
 
 def cmdline_parse():
@@ -111,6 +112,12 @@ def copy_to_clipboard(text):
     gtk.Clipboard().store()
 
 
+def make_css_inline(text):
+    inliner = pynliner.Pynliner()
+    inliner.from_string(text)
+    return inliner.run()
+
+
 if __name__ == '__main__':
     cmdline_arguments = cmdline_parse()
     for_output = read_input(cmdline_arguments.filename)
@@ -121,4 +128,5 @@ if __name__ == '__main__':
         for_output = to_html(for_output)
         for_output = append_html_header(for_output, cmdline_arguments)
         for_output = prepend_html_footer(for_output, cmdline_arguments)
+        for_output = make_css_inline(for_output)
     copy_to_clipboard(for_output)
