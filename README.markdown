@@ -1,14 +1,26 @@
 # Markdown Mail
 
-For the given Markdown document, tag specified URLs with Google
-Analytics parameters and copy to the clipboard.
+Prepare HTML emails given a Markdown document.
 
-If the output is to be in HTML (default if -p [plaintext] is 
-not specified), then the document is also converted to HTML.
+Good if you want to send HTML email.
 
-Also for HTML, if the template files
-./template/{header,footer}.html are found, the output is also
-wrapped with these files.
+* Tags specified tags in an email with Google Analytics parameters
+
+* Converts Markdown to HTML (if -p [plaintext] paramter is not
+  specified)
+
+* Wraps HTML in specified header and footer template files
+
+* Copies result to clipboard
+
+## Technical details
+
+If the template files `./template/{header,footer}.html` are found, 
+then output is also wrapped with these files.
+
+Also see [Premailer](https://github.com/alexdunae/premailer) for
+converting normal HTMl/CSS to inline CSS. Run this on your
+template files before storing them in the template folder.
 
 By default, the basename of the Markdown file is used as the 
 campaign name given to Google Analytics.
