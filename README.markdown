@@ -33,6 +33,7 @@ file is used as the traffic source value given to Google Analytics.
 * [python-markdown](http://packages.python.org/Markdown/) 
   module. Install it:
 
+    sudo apt-get install python-pip
     sudo easy_install markdown
 
 * Gnome window manager (since my copy-to-clipboard is not 
