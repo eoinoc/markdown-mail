@@ -119,21 +119,28 @@ def make_css_inline(text):
     return inliner.run()
 
 
-def getTempPreviewPath():
+def get_tmp_preview_path():
     """Return the path to the preview file"""
     return os.path.join(tempfile.gettempdir(), 'markmail.html')
 
 
-def writePreivewFile(tmp_path, html):
+def write_preview_file(tmp_path, html):
     preview = open(tmp_path, 'w')
     preview.write(html)
     preview.close()
 
 
-def launchPreview(tmp_path):
+def launch_preview(tmp_path):
     if which('xdg-open'):
         os.system('xdg-open %s' % tmp_path)
         # Sorry that this isn't more generalised
+
+
+def launch_browser_preview():
+    """Helper class to make all the calls required for browser preview."""
+    tmp_path = get_tmp_preview_path()
+    write_preview_file(tmp_path, for_output)
+    launch_preview(tmp_path)
 
 
 def which(program):
@@ -153,6 +160,7 @@ def which(program):
 
     return None
 
+
 if __name__ == '__main__':
     cmdline_arguments = cmdline_parse()
     for_output = read_input(cmdline_arguments.filename)
@@ -165,6 +173,4 @@ if __name__ == '__main__':
         for_output = prepend_html_footer(for_output, cmdline_arguments)
         for_output = make_css_inline(for_output)
     copy_to_clipboard(for_output)
-    tmp_path = getTempPreviewPath()
-    writePreivewFile(tmp_path, for_output)
-    launchPreview(tmp_path)
+    launch_browser_preview()
