@@ -2,6 +2,9 @@
 
 Prepare HTML emails given a Markdown document.
 
+Unfortunately, it assumes you're running under Gnome (to allow for 
+live-browser prviews.)
+
 Good if you want to send HTML email.
 
 * Tags specified tags in an email with Google Analytics parameters
@@ -40,6 +43,10 @@ file is used as the traffic source value given to Google Analytics.
 
     sudo pip install cssutils
     sudo pip install pynliner
+
+* A utility to allow us to launch the preview in a browser:
+
+    sudo pip install desktop
 
 * Gnome window manager (since my copy-to-clipboard is not 
   platform independent in its current form)

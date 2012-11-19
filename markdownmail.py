@@ -7,6 +7,7 @@ import re
 import markdown
 import os
 import pynliner
+import tempfile
 
 
 def cmdline_parse():
@@ -118,6 +119,40 @@ def make_css_inline(text):
     return inliner.run()
 
 
+def getTempPreviewPath():
+    """Return the path to the preview file"""
+    return os.path.join(tempfile.gettempdir(), 'markmail.html')
+
+
+def writePreivewFile(tmp_path, html):
+    preview = open(tmp_path, 'w')
+    preview.write(html)
+    preview.close()
+
+
+def launchPreview(tmp_path):
+    if which('xdg-open'):
+        os.system('xdg-open %s' % tmp_path)
+        # Sorry that this isn't more generalised
+
+
+def which(program):
+    """This method is not my code, thanks to Jay http://stackoverflow.com/a/377028/248220"""
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
 if __name__ == '__main__':
     cmdline_arguments = cmdline_parse()
     for_output = read_input(cmdline_arguments.filename)
@@ -130,3 +165,6 @@ if __name__ == '__main__':
         for_output = prepend_html_footer(for_output, cmdline_arguments)
         for_output = make_css_inline(for_output)
     copy_to_clipboard(for_output)
+    tmp_path = getTempPreviewPath()
+    writePreivewFile(tmp_path, for_output)
+    launchPreview(tmp_path)
