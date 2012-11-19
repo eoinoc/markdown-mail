@@ -172,5 +172,5 @@ if __name__ == '__main__':
         for_output = append_html_header(for_output, cmdline_arguments)
         for_output = prepend_html_footer(for_output, cmdline_arguments)
         for_output = make_css_inline(for_output)
+        launch_browser_preview()
     copy_to_clipboard(for_output)
-    launch_browser_preview()
